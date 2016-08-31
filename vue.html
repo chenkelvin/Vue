@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>vue</title>
+	<style>
+		*{
+			font-family: "微软雅黑";
+		}
+	</style>
+	<script src="vue.js"></script>
+	<!-- http请求的时候，需要加， 一直找了好久这个问题 -->
+	<script src="vue-resource.js"></script>
+</head>
+<body>
+	<article id="demo">
+		name:  {{name}}
+		<br />
+		<!-- vue的双向绑定 -->
+		<input type="text" v-model="name" v-bind:style= "{color: 'red' }" @keyup= "ajax">
+		<!-- vue的各种表现形式 -->
+		<p id="{{name}}">
+			{{obj.a+7}}
+			<br />
+			{{obj.b==3?"hello world!":""}}
+			<br />
+			{{html}}
+			<br />
+			<!-- angular 也可以写html，但是需要多加几行代码 -->
+			{{{html}}}
+			<br />
+			{{ajaxData}}
+		</p>
+		<button v-on:click = "click">按键</button>
+		<button @click = "click">按键</button>
+		<button @click = "ajax">ajax</button>
+		<article>{{ajaxData.text}}</article>
+	</article>
+	<article>{{ajaxData.text}}</article>
+</body>
+<script>
+	// vue  类似一个构造函数；
+	// vue  没有控制器的概念；
+	var demo = new Vue({
+		// 类似，angular ==>>> view;
+		el: "#demo",
+		// 类似，angular ==>>> model;
+		data: {
+			name: "wsscat",
+			obj: {
+				a: 1,
+				b: 3
+			},
+			html: "<span>123</span>",
+			ajaxData: ""
+		},
+		methods:{
+			click: function(){
+				alert(123);
+			},
+			ajax: function(){
+			//  相当于 angular 的控制器， 
+			//  但是vue只有组件的概念，没有控制器的概念；
+				this.$http.get('tuling.php', {
+					//  接 图灵机器人
+					params: {
+						q: this.name
+					}
+				}).then(
+					//  success callback;
+						function(response){
+							console.log(response);
+							this.ajaxData = JSON.parse(response.data);
+							// this.ajaxData = response.data;
+						},
+					//  error callback;
+						function(response){
+
+						}
+					);
+			}
+		},
+		// ready(){
+		// 	//  vue实例化的时候执行；
+		// 	console.log("你正在使用vue");
+		// 	this.$http.get('/someUrl').then(
+		// 		//  箭头函数；
+		// 			(response) => {
+		// 				// sucess callback
+		// 			}, (response) => {
+		// 				// error callback
+		// 			}
+		// 		);
+		// }
+	});
+</script>
+</html>
